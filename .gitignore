@@ -1,0 +1,72 @@
+# General
+.DS_Store
+*.log
+*.bak
+*.swp
+*.swo
+*.swn
+*.swo
+*.swn
+
+# Environment Variables
+.env
+.env.local
+.env.production
+.env.development
+
+# ---- Frontend (React Vite) ----
+smartDelivery_Client/node_modules
+smartDelivery_Client/dist
+smartDelivery_Client/.vite
+smartDelivery_Client/.turbo
+smartDelivery_Client/.eslintcache
+smartDelivery_Client/.yarn/*
+!smartDelivery_Client/.yarn/patches
+!smartDelivery_Client/.yarn/plugins
+!smartDelivery_Client/.yarn/releases
+!smartDelivery_Client/.yarn/sdks
+!smartDelivery_Client/.yarn/versions
+
+# Build Output
+smartDelivery_Client/build
+smartDelivery_Client/public/static
+
+# Logs
+smartDelivery_Client/npm-debug.log*
+smartDelivery_Client/yarn-debug.log*
+smartDelivery_Client/yarn-error.log*
+
+# Editor-specific
+smartDelivery_Client/.idea
+smartDelivery_Client/.vscode
+smartDelivery_Client/.eslintcache
+
+# ---- Backend (Django) ----
+smartDelivery/**/__pycache__/
+smartDelivery/**/**/__pycache__/
+smartDelivery/*.pyc
+smartDelivery/*.pyo
+smartDelivery/db.sqlite3
+smartDelivery/media/
+smartDelivery/staticfiles/
+smartDelivery/.pytest_cache/
+smartDelivery/celerybeat-schedule
+smartDelivery/*.log
+
+# Virtual Environment
+smartDelivery/myenv/
+smartDelivery/.myenv/
+
+
+# Logs & Debug Files
+smartDelivery/debug.log
+smartDelivery/.coverage
+smartDelivery/*.mo
+smartDelivery/.tox/
+smartDelivery/.hypothesis/
+
+# VSCode, JetBrains, MacOS Specific
+.idea/
+.vscode/
+__MACOSX/
+Thumbs.db

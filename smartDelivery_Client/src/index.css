@@ -1,0 +1,70 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    :root {
+      color-scheme: light;
+      --primary-gradient: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+      --glass-bg: rgba(255, 255, 255, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.3);
+      --glass-shadow: rgba(17, 12, 46, 0.1);
+    }
+  
+    :root[class~="dark"] {
+      color-scheme: dark;
+      --glass-bg: rgba(17, 24, 39, 0.95);
+      --glass-border: rgba(255, 255, 255, 0.15);
+      --glass-shadow: rgba(0, 0, 0, 0.2);
+    }
+  
+    :root {
+      --bottom-nav-height: 64px;
+    }
+  
+    ::-webkit-scrollbar {
+      @apply w-1.5;
+    }
+  
+    ::-webkit-scrollbar-track {
+      @apply bg-transparent;
+    }
+  
+    ::-webkit-scrollbar-thumb {
+      @apply bg-gray-300/80 dark:bg-gray-700/80 rounded-full 
+             hover:bg-gray-400 dark:hover:bg-gray-600 
+             transition-colors duration-200;
+    }
+    
+    .scrollbar-thin {
+      scrollbar-width: thin;
+      scrollbar-color: #4b5563 #1f2937; 
+    }
+  
+    .scrollbar-thin::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+  
+    .scrollbar-thin::-webkit-scrollbar-thumb {
+      background-color: #4b5563; /* thumb color */
+      border-radius: 4px;
+    }
+  
+    .scrollbar-thin::-webkit-scrollbar-track {
+      background-color: #1f2937; /* track color */
+    }
+
+    .dark-leaflet-popup .leaflet-popup-content-wrapper {
+      background-color: #1F2937;
+      color: #F3F4F6;
+      border: 1px solid #374151;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+    
+    .dark-leaflet-popup .leaflet-popup-tip {
+      background: #1F2937;
+      border: 1px solid #374151;
+    }
+  }
