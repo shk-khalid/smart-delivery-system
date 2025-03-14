@@ -29,6 +29,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'delivery',
     'corsheaders',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -69,7 +70,8 @@ WSGI_APPLICATION = 'smartDelivery.wsgi.application'
 DATABASES = {
     'default': dj_database_url.config(
         default=os.getenv(
-            "DATABASE_URL"
+            "DATABASE_URL", 
+            ""
         )
     )
 }
