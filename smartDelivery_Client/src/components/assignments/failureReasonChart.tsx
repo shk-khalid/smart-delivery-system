@@ -25,7 +25,7 @@ export function FailureReasonsChart({ reasons }: FailureReasonsChartProps) {
   const total = reasons.reduce((sum, reason) => sum + reason.count, 0);
 
   return (
-    <div className="bg-gradient-to-br from-dark-800/50 to-dark-900/50 backdrop-blur-sm rounded-xl p-4 md:p-6 shadow-lg border border-dark-700">
+    <div className="bg-gradient-to-br from-dark-800/50 to-dark-900/50 backdrop-blur-sm rounded-xl p-4 md:p-6 shadow-lg border border-dark-700 w-full">
       <div className="flex items-center mb-4">
         <AlertOctagon className="text-red-400 mr-2" size={20} />
         <h3 className="text-lg font-semibold text-white">Failure Reasons</h3>
@@ -37,7 +37,8 @@ export function FailureReasonsChart({ reasons }: FailureReasonsChartProps) {
         </div>
       ) : (
         <>
-          <div className="h-64">
+          {/* Responsive chart container */}
+          <div className="h-64 md:h-80">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
@@ -54,6 +55,7 @@ export function FailureReasonsChart({ reasons }: FailureReasonsChartProps) {
                     const x = cx + radius * Math.cos(-midAngle * Math.PI / 180);
                     const y = cy + radius * Math.sin(-midAngle * Math.PI / 180);
 
+                    // Only show label if slice is > 5%
                     return percent > 0.05 ? (
                       <text
                         x={x}
@@ -79,7 +81,7 @@ export function FailureReasonsChart({ reasons }: FailureReasonsChartProps) {
                 {/* Tooltip */}
                 <Tooltip
                   contentStyle={{
-                    backgroundColor: '#1F2937', // dark background
+                    backgroundColor: '#1F2937',
                     border: '1px solid #374151',
                     borderRadius: '0.5rem',
                     color: '#F9FAFB',
@@ -90,23 +92,21 @@ export function FailureReasonsChart({ reasons }: FailureReasonsChartProps) {
                   ]}
                 />
 
-                {/* Legend with updated colors */}
+                {/* Legend */}
                 <Legend
                   layout="horizontal"
                   verticalAlign="bottom"
                   align="center"
                   iconType="circle"
-                  wrapperStyle={{
-                    marginTop: 10,
-                  }}
+                  wrapperStyle={{ marginTop: 10 }}
                   formatter={(value: string) => (
-                    // Tailwind color class that matches your dark theme
                     <span className="text-sm text-dark-300">{value}</span>
                   )}
                 />
               </PieChart>
             </ResponsiveContainer>
           </div>
+
           <div className="mt-4 text-sm text-dark-400 text-center">
             Total Failed Orders: {total}
           </div>

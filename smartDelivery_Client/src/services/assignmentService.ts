@@ -16,7 +16,7 @@ function convertMetrics(raw: any): AssignmentMetrics {
       count: item.count,
     })),
     historicalData: raw.historical_data.map((item: any) => ({
-      timestamp: item.timestamp,
+      timestamp: item.date,
       successRate: item.successRate,
       averageTime: item.averageTime,
       totalAssigned: item.totalAssigned,

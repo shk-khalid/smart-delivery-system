@@ -17,7 +17,7 @@ export const PartnerStatus: React.FC<PartnerStatusProps> = ({ partners }) => {
     // Container with max-height & vertical scrolling
     <div className={
       partners.length > 5
-        ? 'max-h-64 overflow-y-auto divide-y divide-dark-700'
+        ? 'max-h-96 overflow-y-auto divide-y divide-dark-700'
         : 'divide-y divide-dark-700'
     }>
       {partners.map((partner) => (

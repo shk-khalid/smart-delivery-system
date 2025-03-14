@@ -25,7 +25,7 @@ export type Assignment = {
       count: number;
     }[];
     historicalData: {
-      timestamp: Date;
+      date: Date;
       successRate: number;
       averageTime: number;
       totalAssigned: number;

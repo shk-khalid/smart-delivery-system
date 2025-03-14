@@ -139,7 +139,7 @@ export const DashboardPage = () => {
           />
           <MetricCard
             title="Revenue"
-            value={`$${metrics.revenue.toLocaleString()}`}
+            value={`₹${metrics.revenue.toLocaleString()}`}
             icon={DollarSign}
           />
         </div>

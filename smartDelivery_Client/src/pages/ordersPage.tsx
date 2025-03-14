@@ -260,7 +260,7 @@ export function OrdersPage() {
           />
           <SummaryCard
             title="Total Revenue"
-            value={`$${orders.reduce((sum, o) => sum + o.totalAmount, 0).toFixed(2)}`}
+            value={`₹${orders.reduce((sum, o) => sum + o.totalAmount, 0).toFixed(2)}`}
             icon={DollarSign}
           />
         </div>

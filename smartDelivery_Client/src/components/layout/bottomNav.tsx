@@ -16,17 +16,26 @@ export function BottomNav() {
     const handleResize = () => {
       setIsMobile(window.innerWidth <= 768);
     };
-
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
+  // Only render on mobile
   if (!isMobile) return null;
 
   return (
-    <nav className="fixed bottom-0 left-0 z-40 w-full bg-white/10 backdrop-blur-lg border-t border-white/10 shadow-glow">
-      <div className="flex justify-around py-2">
+    <nav
+      className="
+        fixed bottom-0 left-0 z-40 w-full
+        bg-dark-800/50
+        backdrop-blur-md
+        border-t border-white/10
+        shadow-lg
+      "
+    >
+      {/* Adjusted padding to ensure icons/text fit nicely */}
+      <div className="flex justify-around items-center py-3">
         {navigation.map((item) => (
           <NavLink key={item.name} {...item} isBottomNav />
         ))}

@@ -39,11 +39,12 @@ export function NavLink({
       <Icon
         className={`
           h-6 w-6
-          ${(collapsed || isBottomNav) ? 'mx-auto' : ''}
           ${isActive ? 'text-primary-300' : 'text-dark-300'}
+          ${isBottomNav || collapsed ? 'mx-auto' : ''}
         `}
         strokeWidth={isActive ? 2 : 1.5}
       />
+
       {/* Show link text only if not collapsed and not in bottom nav */}
       {!collapsed && !isBottomNav && <span>{name}</span>}
 

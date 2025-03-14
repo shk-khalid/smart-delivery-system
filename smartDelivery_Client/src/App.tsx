@@ -19,6 +19,8 @@ function App() {
             <Route path="/partner" element={<PartnersPage />} />
             <Route path="/orders" element={<OrdersPage />} />
             <Route path="/assignment" element={<AssignmentPage />} />
+            {/* Fallback route to DashboardPage */}
+            <Route path="*" element={<DashboardPage />} />
           </Routes>
         </Layout>
       </Router>
