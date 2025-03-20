@@ -79,7 +79,7 @@ export const partners: DeliveryPartner[] = [
     email: 'arya@example.com',
     phone: '+919900000005',
     status: 'active',
-    currentLoad: 4,
+    currentLoad: 2,
     areas: ['Juhu', 'Bandra West'],
     shift: {
       start: '09:30',
@@ -96,8 +96,8 @@ export const partners: DeliveryPartner[] = [
     name: 'Sansa Stark',
     email: 'sansa@example.com',
     phone: '+919900000006',
-    status: 'active',
-    currentLoad: 3,
+    status: 'inactive',
+    currentLoad: 0,
     areas: ['Powai', 'Kanjur Marg'],
     shift: {
       start: '10:00',
