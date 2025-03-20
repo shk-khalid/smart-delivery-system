@@ -126,7 +126,7 @@ VITE_API_BASE_URL=http://localhost:8000
 ## 🔄 API Documentation
 
 The backend API is documented using Swagger (or a similar tool) and is further detailed in our interactive API documentation file.  
-For a complete overview of all endpoints and their usage, check out the [**docs/api.md**](docs/api.md) file.  
+For a complete overview of all endpoints and their usage, check out the [**api.md**](api.md) file.  
 You can also access the live API documentation by visiting:  
 ```
 http://localhost:8000/api/docs

@@ -10,7 +10,7 @@ import {
 import { format } from 'date-fns';
 
 interface MetricsDataPoint {
-  timestamp: Date;
+  timestamp: string;
   successRate: number;
   averageTime: number;
   totalAssigned: number;
@@ -38,6 +38,11 @@ function safeNumber(value: unknown): number {
 
 function CustomXAxisTick({ x, y, payload, textAnchor }: CustomTickProps) {
   const dateObj = new Date(payload.value);
+  // Check if the date is invalid
+  if (isNaN(dateObj.getTime())) {
+    return null; // Or render a fallback value
+  }
+
   const datePart = format(dateObj, 'MMM d');
   const timePart = format(dateObj, 'HH:mm');
 
@@ -66,6 +71,7 @@ function CustomXAxisTick({ x, y, payload, textAnchor }: CustomTickProps) {
     </g>
   );
 }
+
 
 type ValueType = string | number | (string | number)[];
 
@@ -116,7 +122,12 @@ export function MetricsChart({ data }: MetricsChartProps) {
                   return [value, name];
                 }}
                 labelFormatter={(label: string | number) => {
-                  return format(new Date(label), 'PPpp');
+                  const date = new Date(label);
+                  // Validate the date before formatting
+                  if (isNaN(date.getTime())) {
+                    return label; // Fallback: return the original label if date is invalid
+                  }
+                  return format(date, 'PPpp');
                 }}
               />
               <Line

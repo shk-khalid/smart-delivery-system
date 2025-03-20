@@ -10,8 +10,8 @@ import { ShiftModal } from '../components/partner/shiftModal';
 import { AreasModal } from '../components/partner/areasModal';
 import { DeleteConfirmationModal } from '../components/partner/deleteConfirmationModal';
 import { PartnerFilters } from '../components/partner/partnerFilters';
-import { partnerService } from '../services/partnerService';
 import { LoadingPulse } from '../components/layout/pulseLoading';
+import { partners as mockPartners } from '../data/partnerData'; 
 
 interface PartnerFiltersState {
   search: string;
@@ -24,21 +24,13 @@ interface PartnerFiltersState {
 export const PartnersPage: React.FC = () => {
   const [partners, setPartners] = useState<DeliveryPartner[]>([]);
   const [loading, setLoading] = useState(true);
-
-  // Selected partner for modals
   const [selectedPartner, setSelectedPartner] = useState<DeliveryPartner | null>(null);
-
-  // Modal states
   const [isRegisterModalOpen, setIsRegisterModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isShiftModalOpen, setIsShiftModalOpen] = useState(false);
   const [isAreasModalOpen, setIsAreasModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
-  // Error
   const [error, setError] = useState<string | null>(null);
-
-  // Filters
   const [filters, setFilters] = useState<PartnerFiltersState>({
     search: '',
     area: '',
@@ -47,27 +39,24 @@ export const PartnersPage: React.FC = () => {
     sortOrder: 'asc',
   });
 
-  // Fetch partners
+  // Simulated fetch for partners with random delay
   const fetchPartners = async () => {
-    try {
-      setLoading(true);
-      const response = await partnerService.getPartners();
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      setPartners(response.data);
-    } catch (err: any) {
-      setError(err.message || 'Failed to load partners');
-    } finally {
+    setLoading(true);
+    const delay = Math.floor(Math.random() * 2000) + 1000;
+    setTimeout(() => {
+      // Future API call:
+      // const response = await partnerService.getPartners();
+      // if (response.error) throw new Error(response.error);
+      // setPartners(response.data);
+      setPartners(mockPartners);
       setLoading(false);
-    }
+    }, delay);
   };
 
   useEffect(() => {
     fetchPartners();
   }, []);
 
-  // Show toast if there's an error
   useEffect(() => {
     if (error) {
       toast.error(error);
@@ -75,7 +64,6 @@ export const PartnersPage: React.FC = () => {
     }
   }, [error]);
 
-  // Metrics
   const metrics = useMemo(() => {
     const activePartners = partners.filter((p) => p.status === 'active');
     const totalRating = partners.reduce((sum, p) => sum + p.metrics.rating, 0);
@@ -96,12 +84,10 @@ export const PartnersPage: React.FC = () => {
     };
   }, [partners]);
 
-  // Unique areas
   const uniqueAreas = useMemo(() => {
     return Array.from(new Set(partners.flatMap((p) => p.areas))).sort();
   }, [partners]);
 
-  // Filtered partners
   const filteredPartners = useMemo(() => {
     return partners
       .filter((p) => {
@@ -110,13 +96,8 @@ export const PartnersPage: React.FC = () => {
           p.name.toLowerCase().includes(filters.search.toLowerCase()) ||
           p.email.toLowerCase().includes(filters.search.toLowerCase()) ||
           p.phone.includes(filters.search);
-
-        const matchesStatus =
-          filters.statuses.length === 0 || filters.statuses.includes(p.status);
-
-        const matchesArea =
-          filters.area === '' || p.areas.includes(filters.area);
-
+        const matchesStatus = filters.statuses.length === 0 || filters.statuses.includes(p.status);
+        const matchesArea = filters.area === '' || p.areas.includes(filters.area);
         return matchesSearch && matchesStatus && matchesArea;
       })
       .sort((a, b) => {
@@ -135,14 +116,20 @@ export const PartnersPage: React.FC = () => {
       });
   }, [partners, filters]);
 
-  // Partner CRUD
+  // Partner CRUD operations
   const handleRegisterPartner = async (partner: Omit<DeliveryPartner, '_id'>) => {
     try {
-      const response = await partnerService.createPartner(partner);
-      if (response.error) {
-        throw new Error(response.error);
-      }
-      setPartners([...partners, response.data]);
+      // Future API call:
+      // const response = await partnerService.createPartner(partner);
+      // setPartners([...partners, response.data]);
+      const newPartner: DeliveryPartner = {
+        _id: 'dummy_id_' + Date.now(),
+        ...partner,
+        status: 'active',
+        metrics: { rating: 0, completedOrders: 0, cancelledOrders: 0 },
+        areas: [],
+      };
+      setPartners([...partners, newPartner]);
       toast.success('Partner registered successfully');
     } catch (err: any) {
       toast.error(err.message || 'Failed to register partner');
@@ -151,15 +138,11 @@ export const PartnersPage: React.FC = () => {
 
   const handleEditPartner = async (updatedPartner: DeliveryPartner) => {
     try {
-      const response = await partnerService.updatePartner(
-        updatedPartner._id!,
-        updatedPartner
-      );
-      if (response.error) {
-        throw new Error(response.error);
-      }
+      // Future API call:
+      // const response = await partnerService.updatePartner(updatedPartner._id, updatedPartner);
+      // setPartners((prev) => prev.map((p) => (p._id === updatedPartner._id ? response.data : p)));
       setPartners((prev) =>
-        prev.map((p) => (p._id === updatedPartner._id ? response.data : p))
+        prev.map((p) => (p._id === updatedPartner._id ? updatedPartner : p))
       );
       toast.success('Partner updated successfully');
     } catch (err: any) {
@@ -169,10 +152,9 @@ export const PartnersPage: React.FC = () => {
 
   const handleEditShift = async (partnerId: string, shift: { start: string; end: string }) => {
     try {
-      const response = await partnerService.updatePartner(partnerId, { shift });
-      if (response.error) {
-        throw new Error(response.error);
-      }
+      // Future API call:
+      // const response = await partnerService.updatePartner(partnerId, { shift });
+      // setPartners((prev) => prev.map((p) => (p._id === partnerId ? { ...p, shift } : p)));
       setPartners((prev) =>
         prev.map((p) => (p._id === partnerId ? { ...p, shift } : p))
       );
@@ -184,10 +166,9 @@ export const PartnersPage: React.FC = () => {
 
   const handleEditAreas = async (partnerId: string, areas: string[]) => {
     try {
-      const response = await partnerService.updatePartner(partnerId, { areas });
-      if (response.error) {
-        throw new Error(response.error);
-      }
+      // Future API call:
+      // const response = await partnerService.updatePartner(partnerId, { areas });
+      // setPartners((prev) => prev.map((p) => (p._id === partnerId ? { ...p, areas } : p)));
       setPartners((prev) =>
         prev.map((p) => (p._id === partnerId ? { ...p, areas } : p))
       );
@@ -199,10 +180,9 @@ export const PartnersPage: React.FC = () => {
 
   const handleDeletePartner = async (partnerId: string) => {
     try {
-      const response = await partnerService.deletePartner(partnerId);
-      if (response.error) {
-        throw new Error(response.error);
-      }
+      // Future API call:
+      // const response = await partnerService.deletePartner(partnerId);
+      // setPartners((prev) => prev.filter((p) => p._id !== partnerId));
       setPartners((prev) => prev.filter((p) => p._id !== partnerId));
       toast.success('Partner deleted successfully');
     } catch (err: any) {
@@ -220,7 +200,6 @@ export const PartnersPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-800 to-dark-900">
-      {/* HEADER */}
       <header className="bg-gradient-to-r from-primary-700 to-primary-800 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between">
           <div>
@@ -238,23 +217,15 @@ export const PartnersPage: React.FC = () => {
           </button>
         </div>
       </header>
-
-      {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto px-4 py-6">
         <MetricsPanel
           totalActive={metrics.totalActive}
           avgRating={metrics.avgRating}
           topAreas={metrics.topAreas}
         />
-
         <div className="mt-8">
-          <PartnerFilters
-            filters={filters}
-            onFiltersChange={setFilters}
-            areas={uniqueAreas}
-          />
+          <PartnerFilters filters={filters} onFiltersChange={setFilters} areas={uniqueAreas} />
         </div>
-
         <PartnerList
           partners={filteredPartners}
           onEdit={(partner) => {
@@ -274,8 +245,6 @@ export const PartnersPage: React.FC = () => {
             setIsDeleteModalOpen(true);
           }}
         />
-
-        {/* REGISTER MODAL */}
         <RegisterPartnerModal
           isOpen={isRegisterModalOpen}
           onClose={() => {
@@ -284,8 +253,6 @@ export const PartnersPage: React.FC = () => {
           }}
           onSubmit={handleRegisterPartner}
         />
-
-        {/* EDIT MODAL */}
         {selectedPartner && isEditModalOpen && (
           <EditPartnerModal
             isOpen={isEditModalOpen}
@@ -297,8 +264,6 @@ export const PartnersPage: React.FC = () => {
             onSubmit={handleEditPartner}
           />
         )}
-
-        {/* SHIFT MODAL */}
         {selectedPartner && (
           <ShiftModal
             isOpen={isShiftModalOpen}
@@ -310,8 +275,6 @@ export const PartnersPage: React.FC = () => {
             onSave={handleEditShift}
           />
         )}
-
-        {/* AREAS MODAL */}
         {selectedPartner && (
           <AreasModal
             isOpen={isAreasModalOpen}
@@ -323,8 +286,6 @@ export const PartnersPage: React.FC = () => {
             onSave={handleEditAreas}
           />
         )}
-
-        {/* DELETE CONFIRMATION MODAL */}
         {selectedPartner && (
           <DeleteConfirmationModal
             isOpen={isDeleteModalOpen}

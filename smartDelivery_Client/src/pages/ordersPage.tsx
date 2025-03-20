@@ -2,26 +2,26 @@ import { useState, useMemo, useEffect } from 'react';
 import { Package, Clock, DollarSign } from 'lucide-react';
 import { format, subDays } from 'date-fns';
 import toast from 'react-hot-toast';
-
-import { orderService } from '../services/orderService';
 import { SummaryCard } from '../components/orders/summaryCard';
 import { OrderFilters } from '../components/orders/orderFilters';
 import { OrdersTable } from '../components/orders/ordersTable';
 import { OrderChart } from '../components/orders/orderChart';
 import { BulkActionsToolbar } from '../components/orders/bulkActionsToolbar';
-import { Order, OrderStatus, OrderFiltersState } from '../types/order';
 import { AssignPartnerModal } from '../components/orders/assignPartnerModal';
 import { DeleteConfirmationModal } from '../components/orders/deleteConfirmationModal';
 import { LoadingPulse } from '../components/layout/pulseLoading';
+import { Order, OrderStatus, OrderFiltersState } from '../types/order';
+import { order as mockOrders, trendData as mockTrendData } from '../data/orderData';
+
+// For future reference: API calls using orderService
+// import { orderService } from '../services/orderService';
 
 export function OrdersPage() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [trendData, setTrendData] = useState<
     { date: string; orders: number; revenue: number }[]
   >([]);
-
   const [filters, setFilters] = useState<OrderFiltersState>({
     search: '',
     statuses: [],
@@ -33,7 +33,6 @@ export function OrdersPage() {
     sortBy: 'date',
     sortOrder: 'desc',
   });
-
   const [selectedOrders, setSelectedOrders] = useState<string[]>([]);
   const [assignModalOpen, setAssignModalOpen] = useState(false);
   const [orderToAssign, setOrderToAssign] = useState<string | null>(null);
@@ -41,39 +40,26 @@ export function OrdersPage() {
   const [orderToDelete, setOrderToDelete] = useState<Order | null>(null);
   const [isBulkDelete, setIsBulkDelete] = useState(false);
 
-  // ===== Fetch Orders =====
+  // Simulated fetch for orders with a random delay (1-3 seconds)
   const fetchOrders = async () => {
-    try {
-      setLoading(true);
-      const data = await orderService.getOrders({
-        status: filters.statuses,
-        area: filters.area,
-        date: filters.dateRange.start,
-      });
-      setOrders(data);
-    } catch (error) {
-      console.error('Error fetching orders:', error);
-      toast.error('Failed to fetch orders');
-    } finally {
+    setLoading(true);
+    const delay = Math.floor(Math.random() * 2000) + 1000;
+    setTimeout(() => {
+      // API call commented out for future reference:
+      // const data = await orderService.getOrders({ ... });
+      setOrders(mockOrders);
       setLoading(false);
-    }
+    }, delay);
   };
 
-  // ===== Fetch Trend Data =====
+  // Simulated fetch for trend data
   const fetchTrendData = async () => {
-    try {
-      const data = await orderService.getTrendData(
-        filters.dateRange.start,
-        filters.dateRange.end
-      );
-      setTrendData(data);
-    } catch (error) {
-      console.error('Error fetching trend data:', error);
-      toast.error('Failed to fetch trend data');
-    }
+    // API call commented out for future reference:
+    // const data = await orderService.getTrendData(filters.dateRange.start, filters.dateRange.end);
+    setTrendData(mockTrendData);
   };
 
-  // Re-fetch whenever relevant filters change
+  // Re-fetch data whenever filters change
   useEffect(() => {
     fetchOrders();
     fetchTrendData();
@@ -84,7 +70,7 @@ export function OrdersPage() {
     filters.dateRange.end,
   ]);
 
-  // ===== Filtered & Sorted Orders =====
+  // Filter and sort orders based on search and filters
   const filteredOrders = useMemo(() => {
     return orders
       .filter((order) => {
@@ -92,7 +78,6 @@ export function OrdersPage() {
           filters.search === '' ||
           order.orderNumber.toLowerCase().includes(filters.search.toLowerCase()) ||
           order.customerName.toLowerCase().includes(filters.search.toLowerCase());
-
         return matchesSearch;
       })
       .sort((a, b) => {
@@ -114,12 +99,13 @@ export function OrdersPage() {
       });
   }, [filters.search, filters.sortBy, filters.sortOrder, orders]);
 
-  // ===== Update Single Order Status =====
+  // Update single order status with a simulated update
   const handleStatusChange = async (orderId: string, status: OrderStatus) => {
     try {
-      const updatedOrderData = await orderService.updateOrderStatus(orderId, status);
+      // Future API call:
+      // const updatedOrderData = await orderService.updateOrderStatus(orderId, status);
       setOrders((prevOrders) =>
-        prevOrders.map((o) => (o.id === orderId ? { ...o, ...updatedOrderData } : o))
+        prevOrders.map((o) => (o.id === orderId ? { ...o, status } : o))
       );
       toast.success(`Order status updated to ${status}`);
     } catch (error) {
@@ -128,7 +114,7 @@ export function OrdersPage() {
     }
   };
 
-  // ===== Single Delete =====
+  // Single order deletion
   const handleDelete = (orderId: string) => {
     const foundOrder = orders.find((o) => o.id === orderId);
     if (foundOrder) {
@@ -141,12 +127,14 @@ export function OrdersPage() {
   const handleConfirmDelete = async () => {
     try {
       if (isBulkDelete) {
-        const response = await orderService.bulkDeleteOrders(selectedOrders);
-        toast.success(response.detail || 'Orders deleted successfully');
+        // Future API call:
+        // const response = await orderService.bulkDeleteOrders(selectedOrders);
+        toast.success('Simulated bulk delete: Orders deleted successfully');
         setSelectedOrders([]);
       } else if (orderToDelete) {
-        const response = await orderService.deleteOrder(orderToDelete.id);
-        toast.success(response.detail || 'Order deleted successfully');
+        // Future API call:
+        // const response = await orderService.deleteOrder(orderToDelete.id);
+        toast.success('Simulated delete: Order deleted successfully');
       }
       await fetchOrders();
       await fetchTrendData();
@@ -165,7 +153,7 @@ export function OrdersPage() {
     }
   };
 
-  // ===== Assign Partner =====
+  // Open assign partner modal
   const handleAssign = (orderId: string) => {
     setOrderToAssign(orderId);
     setAssignModalOpen(true);
@@ -174,10 +162,11 @@ export function OrdersPage() {
   const handleAssignPartner = async () => {
     if (orderToAssign) {
       try {
-        await orderService.assignOrder(orderToAssign);
+        // Future API call:
+        // await orderService.assignOrder(orderToAssign);
+        toast.success('Simulated assign: Order assigned successfully');
         await fetchOrders();
         await fetchTrendData();
-        toast.success('Order assigned successfully');
       } catch (error) {
         console.error('Error assigning order:', error);
         toast.error('Failed to assign order');
@@ -187,7 +176,7 @@ export function OrdersPage() {
     }
   };
 
-  // ===== Bulk Actions =====
+  // Bulk actions for status change and deletion
   const handleBulkStatusChange = async (status: OrderStatus) => {
     try {
       await Promise.all(selectedOrders.map((id) => handleStatusChange(id, status)));
@@ -211,7 +200,7 @@ export function OrdersPage() {
     }
   };
 
-  // ===== Table Selections =====
+  // Table selections
   const handleSelectOrder = (orderId: string) => {
     setSelectedOrders((prev) =>
       prev.includes(orderId) ? prev.filter((id) => id !== orderId) : [...prev, orderId]
@@ -232,7 +221,6 @@ export function OrdersPage() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-dark-800 to-dark-900 overflow-x-hidden">
-      {/* HEADER */}
       <header className="bg-gradient-to-r from-primary-700 to-primary-800 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col sm:flex-row items-start sm:items-center justify-between">
           <div>
@@ -243,10 +231,7 @@ export function OrdersPage() {
           </div>
         </div>
       </header>
-
-      {/* MAIN CONTENT */}
       <main className="max-w-7xl mx-auto px-4 py-6 space-y-6">
-        {/* SUMMARY CARDS */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           <SummaryCard
             title="Total Orders"
@@ -264,8 +249,6 @@ export function OrdersPage() {
             icon={DollarSign}
           />
         </div>
-
-        {/* TRENDS */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           <div className="bg-gradient-to-br from-dark-800/50 to-dark-900/50 backdrop-blur-sm rounded-xl p-4 md:p-6 shadow-lg border border-dark-700">
             <h3 className="text-lg font-semibold mb-4 text-white">Orders Trend</h3>
@@ -276,11 +259,7 @@ export function OrdersPage() {
             <OrderChart data={trendData} type="revenue" />
           </div>
         </div>
-
-        {/* FILTERS */}
         <OrderFilters filters={filters} onFiltersChange={setFilters} />
-
-        {/* BULK ACTIONS */}
         {selectedOrders.length > 1 && (
           <BulkActionsToolbar
             selectedCount={selectedOrders.length}
@@ -289,8 +268,6 @@ export function OrdersPage() {
             onAssign={handleBulkAssign}
           />
         )}
-
-        {/* ORDERS TABLE */}
         <div>
           <OrdersTable
             orders={filteredOrders}
@@ -303,8 +280,6 @@ export function OrdersPage() {
           />
         </div>
       </main>
-
-      {/* MODALS */}
       {assignModalOpen && (
         <AssignPartnerModal
           onClose={() => {
@@ -314,7 +289,6 @@ export function OrdersPage() {
           onAssign={handleAssignPartner}
         />
       )}
-
       <DeleteConfirmationModal
         isOpen={deleteModalOpen}
         onClose={() => {
